@@ -8,7 +8,7 @@
  * @brief  Handles LibNM connection callbacks when opening a connection.
  */
 
-#include <nm-client.h>
+#include <NetworkManager.h>
 
 namespace Wifi { namespace LibNM
 {

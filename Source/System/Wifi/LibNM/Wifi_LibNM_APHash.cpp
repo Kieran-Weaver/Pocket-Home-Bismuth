@@ -5,7 +5,7 @@
 
 // Generates a Wifi access point identifier using the access point's SSID,
 // mode, and security settings.
-Wifi::LibNM::APHash::APHash(const GByteArray* ssid,
+Wifi::LibNM::APHash::APHash(GBytes* ssid,
         APMode mode,
         SecurityType securityType)
 {
@@ -17,7 +17,9 @@ Wifi::LibNM::APHash::APHash(const GByteArray* ssid,
     }
 
     unsigned char input[66] = {0};
-    memcpy(input, ssid->data, ssid->len);
+    gsize len = 0;
+    const char* data = (const char*)g_bytes_get_data( ssid, &len );
+    memcpy(input, data, len);
     // Use mode and securityType as bitflags
     input[32] |= (unsigned char) mode;
     input[32] |= (unsigned char) securityType;

@@ -38,7 +38,7 @@ Wifi::LibNM::SSID WifiNMSettings::Wireless::getSSID() const
     GLib::ObjectPtr settingsPtr(*this);
     if (settingsPtr != nullptr)
     {
-        return SSID(nm_setting_wireless_get_ssid(toNMWireless(settingsPtr)));
+        return SSID( nm_setting_wireless_get_ssid( toNMWireless( settingsPtr ) ) );
     }
     return SSID();
 }

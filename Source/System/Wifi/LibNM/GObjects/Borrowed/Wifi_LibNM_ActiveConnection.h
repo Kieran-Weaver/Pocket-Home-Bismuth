@@ -7,7 +7,7 @@
  */
 
 #include "GLib_Borrowed_Object.h"
-#include <nm-active-connection.h>
+#include <NetworkManager.h>
 
 namespace Wifi { namespace LibNM
 {

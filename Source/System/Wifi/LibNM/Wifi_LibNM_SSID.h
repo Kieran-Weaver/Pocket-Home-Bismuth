@@ -41,7 +41,7 @@ public:
      *
      * @param toCopy  The SSID byte string this object will copy.
      */
-    SSID(const GByteArray* toCopy = nullptr);
+    SSID(GBytes* toCopy = nullptr);
 
     /**
      * @brief  Frees all SSID data on destruction.
@@ -61,7 +61,7 @@ public:
      * @return  The SSID's exact value, as a byte array that may contain
      *          unprintable characters.
      */
-    GByteArray* getByteArray() const;
+    GBytes* getByteArray() const;
 
     /**
      * @brief  Assigns another SSID's data to this SSID.
@@ -80,7 +80,7 @@ public:
      *
      * @return          This SSID object.
      */
-    SSID& operator= (GByteArray* toAssign);
+    SSID& operator= (GBytes* toAssign);
 
     /**
      * @brief  Checks if two SSIDs are equivalent.
@@ -116,7 +116,7 @@ public:
      *
      * @return     Whether this object's internal byte string matches rhs.
      */
-    bool operator== (GByteArray* rhs) const;
+    bool operator== (GBytes* rhs) const;
 
 
     /**
@@ -127,7 +127,7 @@ public:
      * @return     Whether this object's internal byte string does not match
      *             rhs.
      */
-    bool operator!= (GByteArray* rhs) const;
+    bool operator!= (GBytes* rhs) const;
 
 private:
     /**
@@ -136,7 +136,7 @@ private:
      * @param toCopy  An SSID byte string to copy, or nullptr to set this
      *                object to a null value.
      */
-    void copyByteArray(const GByteArray* ssidBytes);
+    void copyByteArray(GBytes* ssidBytes);
 
     /**
      * @brief  Frees any non-null SSID byte string stored in this object.
@@ -144,5 +144,5 @@ private:
     void clearByteArray();
 
     // Stores the SSID value as a byte string.
-    GByteArray* ssidBytes = nullptr;
+    GBytes* ssidBytes = nullptr;
 };

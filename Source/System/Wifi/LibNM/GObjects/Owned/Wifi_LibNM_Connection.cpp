@@ -79,7 +79,7 @@ void Wifi::LibNM::Connection::addSettings(Settings::Object addedSettings)
 {
     if (isNull())
     {
-        setGObject(G_OBJECT(nm_connection_new()));
+        setGObject(G_OBJECT(nm_simple_connection_new()));
     }
     GLib::ObjectPtr connectionPtr(*this);
     jassert(connectionPtr != nullptr);
@@ -163,7 +163,7 @@ void Wifi::LibNM::Connection::setPath(const char* path)
 {
     if (isNull())
     {
-        setGObject(G_OBJECT(nm_connection_new()));
+        setGObject(G_OBJECT(nm_simple_connection_new()));
     }
     GLib::ObjectPtr connectionPtr(*this);
     if (connectionPtr != nullptr)

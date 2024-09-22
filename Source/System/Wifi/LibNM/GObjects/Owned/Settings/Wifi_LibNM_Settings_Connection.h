@@ -6,7 +6,7 @@
  */
 
 #include "Wifi_LibNM_Settings_Object.h"
-#include <nm-setting-connection.h>
+#include <NetworkManager.h>
 
 namespace Wifi { namespace LibNM { namespace Settings { class Connection; } } }
 

@@ -70,7 +70,7 @@ NMDeviceStateReason Wifi::LibNM::DeviceWifi::getStateReason() const
     NMDeviceStateReason reason = NM_DEVICE_STATE_REASON_UNKNOWN;
     if (!isNull())
     {
-        nm_device_get_state_reason(getDevicePtr(), &reason);
+        reason = nm_device_get_state_reason(getDevicePtr());
     }
     return reason;
 }
@@ -245,11 +245,13 @@ Wifi::LibNM::DeviceWifi::getAccessPoints() const
     return currentAccessPoints;
 }
 
-static void postScanCallback(NMDeviceWifi* device, GError* error,
+static void postScanCallback(GObject* device, GAsyncResult* res,
         gpointer user_data)
 {
         DBG(dbgPrefix << __func__ << ": scanned for visible access points.");
-        if (error != nullptr)
+	GError* error = nullptr;
+	gboolean success = nm_device_wifi_request_scan_finish( NM_DEVICE_WIFI( device ), res, &error );
+        if (!success)
         {
             DBG(dbgPrefix << __func__ << ": Scanning error: "
                     << (char *) error->message);
@@ -265,7 +267,8 @@ void Wifi::LibNM::DeviceWifi::requestScan() const
     {
         DBG(dbgPrefix << __func__
                 << ": requesting scan for visible access points.");
-        nm_device_wifi_request_scan_simple(getWifiDevicePtr(),
+        nm_device_wifi_request_scan_async(getWifiDevicePtr(),
+		nullptr,
                 postScanCallback, nullptr);
     }
 }

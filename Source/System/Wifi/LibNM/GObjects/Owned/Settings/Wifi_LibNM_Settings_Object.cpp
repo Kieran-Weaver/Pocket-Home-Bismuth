@@ -1,6 +1,6 @@
 #include "Wifi_LibNM_Settings_Object.h"
 #include "Wifi_LibNM_ContextTest.h"
-#include <nm-connection.h>
+#include <NetworkManager.h>
 
 namespace WifiNMSettings = Wifi::LibNM::Settings;
 

@@ -7,7 +7,7 @@
 
 #include "GLib_Borrowed_Object.h"
 #include "GLib_Signal_Handler.h"
-#include <nm-access-point.h>
+#include <NetworkManager.h>
 
 namespace Wifi { namespace LibNM {
     class AccessPoint;
@@ -62,7 +62,7 @@ public:
      *
      * @return  The exact SSID value, packaged in a byte array.
      */
-    const GByteArray* getSSID() const;
+    GBytes* getSSID() const;
 
     /**
      * @brief  Gets the access point SSID, converted into a printable string

@@ -14,7 +14,7 @@ const char* Wifi::LibNM::ActiveConnection::getAccessPointPath() const
     const char* path = "";
     if (!isNull())
     {
-        path = nm_active_connection_get_specific_object(getNMObjectPtr());
+        path = nm_active_connection_get_specific_object_path(getNMObjectPtr());
         if (path == nullptr)
         {
             path = "";

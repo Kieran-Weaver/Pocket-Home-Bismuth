@@ -9,7 +9,7 @@
 #include "GLib_Borrowed_Object.h"
 #include "GLib_Borrowed_ObjectLender.h"
 #include "GLib_Signal_Handler.h"
-#include <nm-device-wifi.h>
+#include <NetworkManager.h>
 
 namespace Wifi
 {

@@ -1,5 +1,5 @@
 #include "Wifi_LibNM_SSID.h"
-#include <nm-utils.h>
+#include <NetworkManager.h>
 
 // Creates this SSID copying another SSID.
 Wifi::LibNM::SSID::SSID(const SSID& toCopy)
@@ -17,7 +17,7 @@ Wifi::LibNM::SSID::SSID(SSID&& toCopy)
 
 
 // Creates this SSID from a SSID byte string.
-Wifi::LibNM::SSID::SSID(const GByteArray* toCopy)
+Wifi::LibNM::SSID::SSID(GBytes* toCopy)
 {
     copyByteArray(toCopy);
 }
@@ -36,7 +36,9 @@ juce::String Wifi::LibNM::SSID::toString() const
     juce::String ssidText;
     if (ssidBytes != nullptr)
     {
-        char* utfSSID = nm_utils_ssid_to_utf8(ssidBytes);
+        gsize len = 0;
+        const guint8* data = (const guint8*)g_bytes_get_data( ssidBytes, &len );
+        char* utfSSID = nm_utils_ssid_to_utf8(data, len);
         if (utfSSID != nullptr)
         {
             ssidText = utfSSID;
@@ -49,7 +51,7 @@ juce::String Wifi::LibNM::SSID::toString() const
 
 
 // Gets this SSID's internal SSID byte string.
-GByteArray* Wifi::LibNM::SSID::getByteArray() const
+GBytes* Wifi::LibNM::SSID::getByteArray() const
 {
     return ssidBytes;
 }
@@ -64,7 +66,7 @@ Wifi::LibNM::SSID& Wifi::LibNM::SSID::operator= (const SSID& toCopy)
 
 
 // Assigns a copy of an SSID bytestring to this SSID.
-Wifi::LibNM::SSID& Wifi::LibNM::SSID::operator= (GByteArray* toAssign)
+Wifi::LibNM::SSID& Wifi::LibNM::SSID::operator= (GBytes* toAssign)
 {
     copyByteArray(toAssign);
     return *this;
@@ -96,20 +98,12 @@ bool Wifi::LibNM::SSID::operator< (const SSID& rhs) const
     {
         return true;
     }
-    const int comparedBytes = std::min(ssidBytes->len, rhs.ssidBytes->len);
-    for (int i = 0; i < comparedBytes; i++)
-    {
-        if (ssidBytes->data[i] != rhs.ssidBytes->data[i])
-        {
-            return ssidBytes->data[i] < rhs.ssidBytes->data[i];
-        }
-    }
-    return ssidBytes->len < rhs.ssidBytes->len;
+    return !!g_bytes_compare(ssidBytes, rhs.ssidBytes);
 }
 
 
 // Checks if a SSID and a raw SSID byte string are equivalent.
-bool Wifi::LibNM::SSID::operator== (GByteArray* rhs) const
+bool Wifi::LibNM::SSID::operator== (GBytes* rhs) const
 {
     if (ssidBytes == nullptr)
     {
@@ -119,36 +113,24 @@ bool Wifi::LibNM::SSID::operator== (GByteArray* rhs) const
     {
         return ssidBytes == nullptr;
     }
-    if (ssidBytes->len != rhs->len)
-    {
-        return false;
-    }
-    for (int i = 0; i < ssidBytes->len; i++)
-    {
-        if (ssidBytes->data[i] != rhs->data[i])
-        {
-            return false;
-        }
-    }
-    return true;
+    return g_bytes_equal( ssidBytes, rhs );
 }
 
 
 // Checks if a SSID and a raw SSID byte string are not equivalent.
-bool Wifi::LibNM::SSID::operator!= (GByteArray* rhs) const
+bool Wifi::LibNM::SSID::operator!= (GBytes* rhs) const
 {
     return ! (*this == rhs);
 }
 
 
 // Copies a SSID byte string, storing it in this object.
-void Wifi::LibNM::SSID::copyByteArray(const GByteArray* toCopy)
+void Wifi::LibNM::SSID::copyByteArray(GBytes* toCopy)
 {
     clearByteArray();
     if (toCopy != nullptr)
     {
-        ssidBytes = g_byte_array_sized_new(toCopy->len);
-        g_byte_array_append(ssidBytes, toCopy->data, toCopy->len);
+        ssidBytes = g_bytes_ref( toCopy );
     }
 }
 
@@ -158,7 +140,7 @@ void Wifi::LibNM::SSID::clearByteArray()
 {
     if (ssidBytes != nullptr)
     {
-        g_byte_array_unref(ssidBytes);
+        g_bytes_unref(ssidBytes);
         ssidBytes = nullptr;
     }
 }

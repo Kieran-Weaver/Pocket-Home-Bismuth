@@ -10,7 +10,7 @@
  */
 
 #include "GLib_Signal_Handler.h"
-#include <nm-device-wifi.h>
+#include <NetworkManager.h>
 
 namespace Wifi
 {

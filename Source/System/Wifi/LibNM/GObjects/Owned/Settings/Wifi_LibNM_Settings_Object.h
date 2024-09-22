@@ -7,7 +7,7 @@
  */
 
 #include "GLib_Owned_Object.h"
-#include <nm-connection.h>
+#include <NetworkManager.h>
 
 namespace Wifi { namespace LibNM { namespace Settings { class Object; } } }
 

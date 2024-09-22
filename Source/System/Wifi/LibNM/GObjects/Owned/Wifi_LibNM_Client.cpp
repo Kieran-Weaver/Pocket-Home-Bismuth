@@ -185,7 +185,7 @@ void Wifi::LibNM::Client::deactivateConnection
         if (!activeCon.isNull())
         {
             nm_client_deactivate_connection(toClientPtr(dataPtr),
-                    NM_ACTIVE_CONNECTION(activeCon.getGObject()));
+                    NM_ACTIVE_CONNECTION(activeCon.getGObject()), nullptr, nullptr);
             connectionLender->invalidateObject(activeCon.getGObject());
         }
     }
@@ -272,24 +272,24 @@ void Wifi::LibNM::Client::activateConnection(
             if (isNew)
             {
                 DBG(dbgPrefix << __func__ << ": adding new connection.");
-                nm_client_add_and_activate_connection(
+                nm_client_add_and_activate_connection_async(
                         toClientPtr(clientDataPtr),
                         NM_CONNECTION((GObject*) connectionDataPtr),
                         NM_DEVICE(wifiDevice.getGObject()),
                         apPath,
-                        (NMClientAddActivateFn)
+			nullptr,
                         addActivateCallback,
                         new CallbackData(*this, handler));
             }
             else
             {
                 DBG(dbgPrefix << __func__ << ": activating saved connection.");
-                nm_client_activate_connection(
+                nm_client_activate_connection_async(
                         toClientPtr(clientDataPtr),
                         NM_CONNECTION((GObject*) connectionDataPtr),
                         NM_DEVICE(wifiDevice.getGObject()),
                         apPath,
-                        (NMClientActivateFn)
+			nullptr,
                         activateCallback,
                         new CallbackData(*this, handler));
             }
@@ -297,11 +297,20 @@ void Wifi::LibNM::Client::activateConnection(
     }
 }
 
+void Wifi::LibNM::Client::activateCallback(
+	GObject* object,
+	GAsyncResult* res,
+	void* data )
+{
+	GError* error = nullptr;
+	NMActiveConnection* connection = nm_client_activate_connection_finish( NM_CLIENT( object ), res, &error );
+	activateCallback2( object, connection, error, (CallbackData*)data );
+}
 
 // The NMClientActivateFn called by LibNM when activating an existing
 // connection.
-void Wifi::LibNM::Client::activateCallback(
-        NMClient* client,
+void Wifi::LibNM::Client::activateCallback2(
+        GObject* object,
         NMActiveConnection* connection,
         GError* error,
         CallbackData* callbackData)
@@ -324,12 +333,12 @@ void Wifi::LibNM::Client::activateCallback(
 // The NMClientAddActivateFn called by LibNM when adding and activating a new
 // connection.
 void Wifi::LibNM::Client::addActivateCallback(
-        NMClient* client,
-        NMActiveConnection* connection,
-        const char* path,
-        GError* error,
-        CallbackData* callbackData)
+	GObject* object,
+	GAsyncResult* res,
+	void* data )
 {
-    activateCallback(client, connection, error, callbackData);
+    GError* error = nullptr;
+    NMActiveConnection* connection = nm_client_add_and_activate_connection_finish( NM_CLIENT( object ), res, &error );
+    activateCallback2(object, connection, error, (CallbackData*)data);
 }
 

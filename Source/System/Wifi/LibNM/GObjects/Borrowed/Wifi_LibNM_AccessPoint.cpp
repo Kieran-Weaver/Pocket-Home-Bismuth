@@ -6,7 +6,7 @@
 #include "Wifi_LibNM_ContextTest.h"
 #include "Wifi_LibNM_Thread_Handler.h"
 #include "GLib_ObjectPtr.h"
-#include <nm-utils.h>
+#include <NetworkManager.h>
 
 // Creates a null AccessPoint.
 Wifi::LibNM::AccessPoint::AccessPoint() :
@@ -56,14 +56,14 @@ Wifi::LibNM::APHash Wifi::LibNM::AccessPoint::generateHash() const
 
 // Gets the access point SSID as a byte array from the access point. This may
 // contain unprintable characters, and might not be null-terminated.
-const GByteArray* Wifi::LibNM::AccessPoint::getSSID() const
+GBytes* Wifi::LibNM::AccessPoint::getSSID() const
 {
     ASSERT_NM_CONTEXT;
-    const GByteArray* ssid = nullptr;
+    GBytes* ssid = nullptr;
     if (!isNull())
     {
         NMAccessPoint* nmPtr = getNMObjectPtr();
-        ssid = nm_access_point_get_ssid(nmPtr);
+	ssid = nm_access_point_get_ssid( nmPtr );
     }
     return ssid;
 }
@@ -76,10 +76,12 @@ juce::String Wifi::LibNM::AccessPoint::getSSIDText() const
 {
     ASSERT_NM_CONTEXT;
     juce::String ssidText;
-    const GByteArray* ssid = getSSID();
+    GBytes* ssid = getSSID();
     if (ssid != nullptr)
     {
-        char* utfSSID = nm_utils_ssid_to_utf8(ssid);
+        gsize len = 0;
+        const guint8* data = (const guint8*)g_bytes_get_data( ssid, &len );
+        char* utfSSID = nm_utils_ssid_to_utf8(data, len);
         if (utfSSID != nullptr)
         {
             ssidText = utfSSID;

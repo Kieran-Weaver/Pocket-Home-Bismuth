@@ -5,7 +5,7 @@
  * @brief  Converts assorted Wifi-related enums to text for debug output.
  */
 
-#include <nm-device-wifi.h>
+#include <NetworkManager.h>
 
 namespace Wifi
 {

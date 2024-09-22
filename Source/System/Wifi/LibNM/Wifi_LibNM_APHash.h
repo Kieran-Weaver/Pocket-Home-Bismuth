@@ -45,7 +45,7 @@ public:
      * @param securityType   Indicates the type of security, if any, used to
      *                       restrict access to the wifi access point.
      */
-    APHash(const GByteArray* ssid,
+    APHash(GBytes* ssid,
         APMode mode,
         SecurityType securityType);
 

@@ -8,7 +8,7 @@
 #include "GLib_Owned_Object.h"
 #include "GLib_Signal_Handler.h"
 #include "GLib_Borrowed_ObjectLender.h"
-#include <nm-client.h>
+#include <NetworkManager.h>
 
 namespace Wifi
 {
@@ -211,6 +211,10 @@ private:
     // connection callbacks:
     struct CallbackData;
 
+    static void activateCallback(
+		GObject* object,
+		GAsyncResult* res,
+		void* user_data );
     /**
      * @brief  The NMClientActivateFn called by LibNM when activating an
      *         existing connection.
@@ -228,8 +232,8 @@ private:
      *                      activateConnection call that scheduled this
      *                      callback function.
      */
-    static void activateCallback(
-            NMClient* client,
+    static void activateCallback2(
+            GObject* client,
             NMActiveConnection* connection,
             GError* error,
             CallbackData* callbackData);
@@ -254,11 +258,9 @@ private:
      *                      callback function.
      */
     static void addActivateCallback(
-            NMClient* client,
-            NMActiveConnection* connection,
-            const char* path,
-            GError* error,
-            CallbackData* callbackData);
+	GObject* object,
+	GAsyncResult* res,
+	void* user_data );
 
     // ObjectLenders are managed by the Client, but held by the
     // LibNM::Thread::Module.

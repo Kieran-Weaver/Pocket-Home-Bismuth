@@ -77,7 +77,7 @@ void NMThread::Module::initClient()
     if (networkClient.isNull())
     {
         DBG(dbgPrefix << __func__ << ": Creating new NMClient*");
-        networkClient = Client(nm_client_new(), &wifiDeviceLender,
+        networkClient = Client(nm_client_new(nullptr, nullptr), &wifiDeviceLender,
                 &wifiConnectionLender);
     }
 }

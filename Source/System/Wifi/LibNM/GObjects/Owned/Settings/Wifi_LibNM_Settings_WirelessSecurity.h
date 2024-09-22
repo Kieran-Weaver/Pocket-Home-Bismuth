@@ -7,7 +7,7 @@
  */
 
 #include "Wifi_LibNM_Settings_Object.h"
-#include <nm-setting-wireless-security.h>
+#include <NetworkManager.h>
 
 namespace Wifi
 {

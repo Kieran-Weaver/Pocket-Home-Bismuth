@@ -3,9 +3,7 @@
 #include "Wifi_LibNM_Settings_Object.h"
 #include "Wifi_LibNM_APHash.h"
 #include "Wifi_Resource.h"
-#include <nm-setting-connection.h>
-#include <nm-setting-wireless.h>
-#include <nm-setting-wireless-security.h>
+#include <NetworkManager.h>
 
 // The NetworkManager's DBus path:
 static const constexpr char * busName = "org.freedesktop.NetworkManager";
@@ -69,7 +67,7 @@ Wifi::LibNM::Connection NMDBus::SavedConnection::getNMConnection()
     }
     using juce::String;
     using namespace GLib::VariantConverter;
-    nmConnection = nm_connection_new();
+    nmConnection = nm_simple_connection_new();
     nmConnection.setPath(path.toRawUTF8());
     GVariant* settings = callFunction(getSettingsFunction);
     if (settings == nullptr)
@@ -91,11 +89,13 @@ Wifi::LibNM::Connection NMDBus::SavedConnection::getNMConnection()
             if (getGType(val) == G_TYPE_BYTE_ARRAY)
             {
                 GByteArray* byteArray = getValue<GByteArray*>(val);
+		GBytes* bytes = g_bytes_new( byteArray->data, byteArray->len );
                 g_object_set(G_OBJECT(nmSetting),
                         keyStr.toRawUTF8(),
-                        byteArray,
+                        bytes,
                         nullptr);
                 g_byte_array_unref(byteArray);
+		g_bytes_unref( bytes );
             }
             else
             {
