@@ -1,9 +1,3 @@
-# Temporary hack to fix issue https://github.com/WeAreROLI/JUCE/issues/524
-# Remove this once the JUCE library fixes the issue!
-JUCE_COMPILER_HEADER=deps/JUCE/modules/juce_core/system/juce_CompilerSupport.h
-JUCEFIX=$(shell grep 201402 $(JUCE_COMPILER_HEADER) && \
-            sed -i 's/201402/201300/g' $(JUCE_COMPILER_HEADER))
-
 define HELPTEXT
 ## Pocket-Home Bismuth Makefile ##
 # Usage: make [target] [options]
@@ -75,9 +69,9 @@ CHECK_DEPS ?= 0
 # Executable name:
 JUCE_TARGET_APP = pocket-home
 # Version number:
-APP_VERSION = 0.1.1
+APP_VERSION = 0.1.2
 # Version hex.
-APP_VERSION_HEX = 0x80c
+APP_VERSION_HEX = 0x80d
 
 # Build directories:
 JUCE_BINDIR := build
@@ -114,10 +108,10 @@ JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 \
 CPPFLAGS := -pthread $(CPPFLAGS)
 
 # Extra compilation flags (C++ only):
-CXXFLAGS := -std=gnu++14 $(CXXFLAGS)
+CXXFLAGS := -std=gnu++17 $(CXXFLAGS)
 
 # Directories to search for header files:
-INCLUDE_DIRS := JuceLibraryCode deps/JUCE/modules
+INCLUDE_DIRS := JuceLibraryCode /usr/share/juce/modules
 
 # Directories to recursively search for header files:
 RECURSIVE_INCLUDE_DIRS := Source Tests
@@ -174,7 +168,7 @@ endif
 
 # Set optimization level flags:
 ifeq ($(OPTIMIZATION), 1)
-    CONFIG_CFLAGS := $(CONFIG_CFLAGS) -O3 -flto
+    CONFIG_CFLAGS := $(CONFIG_CFLAGS) -O2 -flto
     CONFIG_LDFLAGS := $(CONFIG_LDFLAGS) -flto
 else
     CONFIG_CFLAGS := $(CONFIG_CFLAGS) -O0
